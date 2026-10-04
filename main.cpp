@@ -27,12 +27,7 @@
 (1, 10) (2, 11) (4, 11)
 */
 
-std::vector<std::pair<int,int>> base_data = {
-  {1, 10}, {2, 11}, {3, 11}, {4, 11}, {5, 11},
-  {6, 10}, {7, 11}, {8, 11}, {9, 11}, {10, 11},
-  {11, 10}
-};
-
+// Функция для вывода вектора пар на экран
 void print(const std::vector<std::pair<int,int>>& data) {
   for (const auto& p : data) {
     std::cout << "(" << p.first << ", " << p.second << ") ";
@@ -40,30 +35,31 @@ void print(const std::vector<std::pair<int,int>>& data) {
   std::cout << std::endl;
 }
 
+// Функция для прореживания последовательности
 std::vector<std::pair<int,int>> seq_reduction(const std::vector<std::pair<int,int>>& data, int n) {
   std::vector<std::pair<int,int>> result;
-  if (data.empty()) return result;
-  if (n < 3) return result;
+  if (data.empty()) return result; // Если входной вектор пустой, возвращаем пустой результат
+  if (n < 3) return data; // Если n < 3, возвращаем исходный вектор, так как прореживание не имеет смысла
 
   size_t data_size = data.size();
-  size_t curr_index = 0;
-  size_t block_start=0;
-  while (curr_index < data_size) {
-    if (result.empty()){
+  size_t curr_index = 0; // Индекс текущего элемента
+  size_t block_start = 0; // Индекс начала текущего блока идентичных элементов
+  while (curr_index < data_size) { // Пока не достигнут конец входного вектора
+    if (result.empty()){ // Если результат пустой, добавляем первый элемент
       result.push_back(data[curr_index]);
       curr_index++;
       continue;
     }
 
-    if(data[curr_index].second == data[block_start].second){
-      if(curr_index - block_start == n-1){
+    if(data[curr_index].second == data[block_start].second){ // Если текущий элемент идентичен первому элементу блока
+      if(curr_index - block_start == n-1){ // Если текущий элемент является n-ным элементом блока, добавляем его в результат
         result.push_back(data[curr_index]);
         block_start = curr_index;
       }
-    } else {
-      if((curr_index - block_start <= n-1) && (curr_index - block_start > 1)){
+    } else { // Если текущий элемент не идентичен первому элементу блока
+      if((curr_index - block_start <= n-1) && (curr_index - block_start > 1)){ // Если расстояние между текущим элементом и началом блока меньше n, но больше 1, добавляем последний элемент блока в результат
         result.push_back(data[curr_index-1]);
-      }
+      } // Добавляем текущий элемент в результат, так как он не идентичен первому элементу блока
       result.push_back(data[curr_index]);
       block_start = curr_index;
     }
@@ -73,7 +69,11 @@ std::vector<std::pair<int,int>> seq_reduction(const std::vector<std::pair<int,in
 }
 
 int main(){
-
+  std::vector<std::pair<int,int>> base_data = {
+  {1, 10}, {2, 11}, {3, 11}, {4, 11}, {5, 11},
+  {6, 10}, {7, 11}, {8, 11}, {9, 11}, {10, 11},
+  {11, 10}
+};
   std::cout << "base data: ";
   print(base_data);
   std::vector<std::pair<int,int>> result;
@@ -81,7 +81,7 @@ int main(){
   print(seq_reduction(base_data, 3));
   std::cout << "result data n = 4: ";
   print(seq_reduction(base_data, 4));
-  std::cout << "result data n = 5: ";
+  std::cout << "result data n = 5: "; // Добавил n = 5 как дополнительный тестовый случай
   print(seq_reduction(base_data, 5));
   return 0;
 }
